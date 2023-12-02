@@ -56,7 +56,7 @@ fun Greeting(miModel: VModel) {
 @Composable
 fun Ronda(miModel: VModel) {
     Text(
-        text = "RONDA: ", // Mostrar el número de ronda
+        text = "RONDA: ${Data.round.value} ", // Mostrar el número de ronda
         color = Color.Black,
         fontWeight = FontWeight.ExtraBold,
         fontSize = 40.sp
@@ -127,7 +127,14 @@ fun startButton(miModel: VModel) {
 fun enviar(miModel: VModel) {
     Button(
         onClick = {
+            if (Data.state == Data.State.INPUT){
+               if ( miModel.comprobarSecuencia()) {
 
+               }else{
+                     miModel.changeState()
+               }
+
+            }
 
 
         },
@@ -150,6 +157,12 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
     Button(
         onClick = {
                   //Recogemos el color que hemos pulsado
+                   // miModel.aumentarSecuenciaUsuario(Data.colors.indexOf(color))
+            if (Data.state == Data.State.WAITING){
+                miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
+                miModel.changeState()
+            }
+
 
 
         },

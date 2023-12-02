@@ -112,20 +112,25 @@ class VModel : ViewModel() {
     /**
      * Función que comprueba si la secuencia del usuario es correcta
      */
-    fun comprobarSecuencia(color: Int) {
-        guardarSecuenciaUsuario(color) // Guardar la secuencia del usuario antes de la comprobación
+    fun comprobarSecuencia(): Boolean {
+        var correcta : Boolean
+        Data.state = Data.State.CHECKING
+        Log.d(TAG_LOG, "Cambiamso el estado a ${Data.state}")
         if (Data.secuence == Data.secuenceUser) {
             Log.d(TAG_LOG, "Secuencia correcta")
-            Data.state = Data.State.CHECKING
+            correcta = true
             Data.round.value++
             if (Data.round.value > Data.record.value) {
                 Data.record.value = Data.round.value
             }
         } else {
             Log.d(TAG_LOG, "Secuencia incorrecta")
+            correcta = false
             Data.state = Data.State.FINISHED
+            Log.d(TAG_LOG, "Se cambia el Estado de la aplicación a${Data.state}")
             Data.round.value = 0
         }
+        return correcta
     }
 
 }
