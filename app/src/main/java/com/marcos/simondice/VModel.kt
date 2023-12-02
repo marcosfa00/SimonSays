@@ -1,6 +1,7 @@
 package com.marcos.simondice
 
 import android.util.Log
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -102,6 +103,7 @@ class VModel : ViewModel() {
     fun guardarSecuenciaUsuario(color: Int) {
         Data.secuenceUser.add(color)
         Log.d(TAG_LOG, "Secuencia del usuario: ${Data.secuenceUser}")
+
     }
 
 
@@ -118,8 +120,10 @@ class VModel : ViewModel() {
         Log.d(TAG_LOG, "Cambiamso el estado a ${Data.state}")
         if (Data.secuence == Data.secuenceUser) {
             Log.d(TAG_LOG, "Secuencia correcta")
+            Data.state = Data.State.SEQUENCE//Cambiamos el estado a SEQUENCE
             correcta = true
             Data.round.value++
+
             if (Data.round.value > Data.record.value) {
                 Data.record.value = Data.round.value
             }
@@ -133,6 +137,20 @@ class VModel : ViewModel() {
         return correcta
     }
 
+    /**
+     * Ahora debemso hacer una función que aumente la secuencia del usuario para
+     * que cada vez se muestren más colores
+     */
+   fun aumentarSecuencia(){
+      if (Data.state == Data.State.SEQUENCE){
+          generarSecuencia()
+          Data.state = Data.State.WAITING
+
+          //Ahora reseteamos la secuencia del usuario
+            Data.secuenceUser = mutableListOf<Int>()
+
+      }
+   }
 }
 
 

@@ -127,9 +127,9 @@ fun startButton(miModel: VModel) {
 fun enviar(miModel: VModel) {
     Button(
         onClick = {
-            if (Data.state == Data.State.INPUT){
+            if (Data.state == Data.State.WAITING){
                if ( miModel.comprobarSecuencia()) {
-
+                    miModel.aumentarSecuencia()
                }else{
                      miModel.changeState()
                }
@@ -160,7 +160,7 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
                    // miModel.aumentarSecuenciaUsuario(Data.colors.indexOf(color))
             if (Data.state == Data.State.WAITING){
                 miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
-                miModel.changeState()
+
             }
 
 
