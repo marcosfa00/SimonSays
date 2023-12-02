@@ -25,9 +25,6 @@ class VModel : ViewModel() {
     }
 
 
-
-
-
     fun changeState() {
         Log.d(TAG_LOG, "Cambia el estado de la aplicación")
         if (Data.state == Data.State.START) {
@@ -83,10 +80,10 @@ class VModel : ViewModel() {
                 Data.colorPath = Data.numColors[i].color.value
                 //Tras obtener el color que hay que mostrar, tocarámostrarlo con un color más
                 // oscuro para que se vea
-                Data.numColors[i].color.value= darkestColor(Data.colorPath,0.5f)
+                Data.numColors[i].color.value = darkestColor(Data.colorPath, 0.5f)
                 delay(500)
                 //Ahora volvemos a poner el color original
-                Data.numColors[i].color.value= Data.colorPath
+                Data.numColors[i].color.value = Data.colorPath
                 delay(500)
             }
         }
@@ -102,50 +99,58 @@ class VModel : ViewModel() {
         return Color(r, g, b, color.alpha)
     }
 
-
-    /**
-     * Función que comprueba si la secuencia del usuario es correcta
-     */
-    fun comprobarSecuencia() {
-        if (Data.secuence==Data.secuenceUser) {
-            Log.d(TAG_LOG, "Secuencia correcta")
-            Data.state = Data.State.FINISHED
-            Data.secuenceUser = mutableListOf<Int>()
-            Data.round.value++
-            if (Data.round.value > Data.record.value) {
-                Data.record.value = Data.round.value
-            }
-        }else{
-            Log.d(TAG_LOG, "Secuencia incorrecta")
-            Data.state = Data.State.FINISHED
-            Data.secuenceUser = mutableListOf<Int>()
-            Data.round.value=0
-        }
+    fun guardarSecuenciaUsuario(color: Int) {
+        Data.secuenceUser.add(color)
+        Log.d(TAG_LOG, "Secuencia del usuario: ${Data.secuenceUser}")
     }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /**
+     * Función que comprueba si la secuencia del usuario es correcta
+     */
+    /**
+     * Función que comprueba si la secuencia del usuario es correcta
+     */
+    fun comprobarSecuencia(color: Int) {
+        guardarSecuenciaUsuario(color) // Guardar la secuencia del usuario antes de la comprobación
+        if (Data.secuence == Data.secuenceUser) {
+            Log.d(TAG_LOG, "Secuencia correcta")
+            Data.state = Data.State.CHECKING
+            Data.round.value++
+            if (Data.round.value > Data.record.value) {
+                Data.record.value = Data.round.value
+            }
+        } else {
+            Log.d(TAG_LOG, "Secuencia incorrecta")
+            Data.state = Data.State.FINISHED
+            Data.round.value = 0
+        }
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

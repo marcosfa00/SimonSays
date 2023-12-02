@@ -82,7 +82,7 @@ fun Botonera(vModel: VModel) {
             Row {
                 rowColors.forEach { color ->
                     Spacer(modifier = Modifier.width(8.dp))
-                    Boton(color = color, miModel = vModel)
+                    Boton(color = color.color, miModel = vModel, name = color.colorName)
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -128,8 +128,6 @@ fun enviar(miModel: VModel) {
     Button(
         onClick = {
 
-                miModel.comprobarSecuencia()
-
 
 
         },
@@ -147,26 +145,30 @@ fun enviar(miModel: VModel) {
 }
 
 
-
 @Composable
-fun Boton(color: Data.Colors, miModel: VModel) {
+fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
     Button(
         onClick = {
+                  //Recogemos el color que hemos pulsado
 
-                  },
+
+        },
         modifier = Modifier
             .padding(10.dp)
             .size(150.dp),
-        colors = ButtonDefaults.buttonColors(color.color.value)
+        colors = ButtonDefaults.buttonColors(color.value)
     ) {
         Text(
-            text = color.colorName,
+            text = name,
             color = Color.Black,
             fontWeight = FontWeight.ExtraBold,
             fontSize = 20.sp
         )
     }
 }
+
+
+
 
 
 
