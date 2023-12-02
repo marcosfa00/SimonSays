@@ -13,85 +13,87 @@ import kotlinx.coroutines.launch
 
 class VModel : ViewModel() {
 
+    //declaramos TAG_LOG
+    val TAG_LOG = "corutina"
 
-
-    var showGameOverDialog by mutableStateOf(false)
-
-    val TAG = "Corrutina"
-
-    /**
-     * Función que genera un número aleatorio entre 0 y el máximo que se le pasa
-     */
-    fun generarNumeroAleatorio(maximo: Int): Int {
-        return (0..maximo).random()
-    }
-
-    /**
-     * Inicializa el juego
-     */
-    fun inicializarJuego() {
-        showGameOverDialog = false
-        Log.d(TAG, "inicializarJuego")
-        reiniciarRonda()
-        reiniciarSecuencia()
-        reiniciarSecuenciaUsuario()
+    fun startGame() {
+        Log.d(TAG_LOG, "Iniciando juego")
+        Data.round.value = 0
+        Data.secuence = mutableListOf<Int>()
+        Data.secuenceUser = mutableListOf<Int>()
         Data.state = Data.State.START
     }
 
-    /*
-    * reiniciar Ronda
-     */
-    fun reiniciarRonda() {
-        Data.round.value = 0
-    }
 
-    fun mostrarDialogoGameOver() {
-        showGameOverDialog = true
-        // Puedes agregar más lógica aquí si es necesario al mostrar el diálogo
-    }
 
-    /*
-    * reiniciar Secuencia
-     */
-    fun reiniciarSecuencia() {
-        Data.secuence.clear()
-    }
 
-    /*
-    Reiniciar Secuencia Usuario
-     */
-    fun reiniciarSecuenciaUsuario() {
-        Data.secuenceUser.clear()
+
+    fun changeState() {
+        Log.d(TAG_LOG, "Cambia el estado de la aplicación")
+        if (Data.state == Data.State.START) {
+            Data.state = Data.State.SEQUENCE
+            getState()
+        } else if (Data.state == Data.State.SEQUENCE) {
+            Data.state = Data.State.WAITING
+            getState()
+        } else if (Data.state == Data.State.WAITING) {
+            Data.state = Data.State.INPUT
+            getState()
+        } else if (Data.state == Data.State.INPUT) {
+            Data.state = Data.State.CHECKING
+            getState()
+        } else if (Data.state == Data.State.CHECKING) {
+            Data.state = Data.State.FINISHED
+            getState()
+        } else if (Data.state == Data.State.FINISHED) {
+            Data.state = Data.State.START
+            getState()
+        }
+
     }
 
     /**
-     * Aumenta la secuencia de colores
+     * FUNCION getState
      */
-    fun mostrarSecuencia() {
-        //Cambiamos el estado del juego a SECUENCIA
-        Log.d(TAG, "mostrarSecuencia")
-        //Ahora debemos crear una especie de hilo, una corrutina, que mostrara la secuencia
-        //Para ello, esta clase ViewModel debera eredar de ViewModel
+    fun getState(): Data.State {
+        Log.d(TAG_LOG, "El estado actual es: ${Data.state}")
+        return Data.state
+
+    }
+
+    /**
+     * FUNCION que genera un numero aleatorio entre 0 y un numero menor del máximo.
+     * @param maximo: Número máximo que se puede generar
+     * @return Int: Número aleatorio generado
+     */
+    fun generarNumeroAleatorio(maximo: Int): Int {
+        return (0..maximo).random()
+
+    }
+
+    //Funcion para generar una secuencia:
+    fun generarSecuencia() {
+        Log.d(TAG_LOG, "Generando secuencia")
+        Data.secuence.add(generarNumeroAleatorio(4))
+        Log.d(TAG_LOG, "Secuencia generada: ${Data.secuence}")
+        //Vamos ahora a utilizar una corrutina para que se muestre la secuencia
         viewModelScope.launch {
-            //Recorremos la secuencia
             for (i in Data.secuence) {
-                Log.d(TAG, "mostrarSecuencia (Color): $i")
+                Log.d(TAG_LOG, "Mostramos el color $i")
                 Data.colorPath = Data.numColors[i].color.value
-                Data.numColors[i].color.value = darkestColor(Data.colorPath,0.5f)
+                //Tras obtener el color que hay que mostrar, tocarámostrarlo con un color más
+                // oscuro para que se vea
+                Data.numColors[i].color.value= darkestColor(Data.colorPath,0.5f)
                 delay(500)
-                Data.numColors[i].color.value = Data.colorPath
+                //Ahora volvemos a poner el color original
+                Data.numColors[i].color.value= Data.colorPath
                 delay(500)
             }
-            Data.state = Data.State.WAITING
-            Log.d(TAG, Data.state.toString())//mostramos el estado en el Log cat
         }
-        Log.d(TAG, Data.state.toString())//mostramos el estado en el Log cat
-
-
     }
 
     /**
-     * Darkest the color of the button
+     * Función que muestra la secuencia de colores más oscuros.
      */
     fun darkestColor(color: Color, factor: Float): Color {
         val r = (color.red * (1 - factor)).coerceIn(0f, 1f)
@@ -102,70 +104,47 @@ class VModel : ViewModel() {
 
 
     /**
-     * Aumenta un color a la secuencia
+     * Función que comprueba si la secuencia del usuario es correcta
      */
-    fun aumentarSecuencia() {
-        Data.state = Data.State.SEQUENCE
-        Data.secuence.add(generarNumeroAleatorio(4))
-        mostrarSecuencia()
-    }
-
-    /**
-     * Aumentar la secuencia del usuario.
-     */
-    fun aumentarSecuenciaUsuario(color: Int) {
-        Data.state = Data.State.INPUT
-        Data.secuenceUser.add(color)
-        Log.d(TAG, Data.secuenceUser.toString())
-
-    }
-
-    fun changeStatus() {
-        if (Data.playStatus.value == "START") {
-            Data.playStatus.value= "RESTART"
-            //Execute the first round
+    fun comprobarSecuencia() {
+        if (Data.secuence==Data.secuenceUser) {
+            Log.d(TAG_LOG, "Secuencia correcta")
+            Data.state = Data.State.FINISHED
+            Data.secuenceUser = mutableListOf<Int>()
             Data.round.value++
-            aumentarSecuencia()
-        } else {
-            Data.playStatus.value= "START"
-            reiniciarRonda()
-        }
-    }
-    fun getStatus(): String {
-        return Data.playStatus.value
-    }
-
-
-    /**
-     * Comprueba la secuencia del usuario
-     */
-    fun comprobarSecuencia(): Boolean {
-        var ok =false
-        Data.state = Data.State.CHECKING
-        if (Data.secuence == Data.secuenceUser) {
-
             if (Data.round.value > Data.record.value) {
                 Data.record.value = Data.round.value
             }
-            reiniciarSecuenciaUsuario()
-            aumentarSecuencia()
-            Data.round.value++
-            ok = true
-        } else if (Data.secuenceUser.size != Data.secuence.size) {
-            showGameOverDialog = true // Mostrar el diálogo de Game Over
-            ok = false
-            inicializarJuego() // Reiniciar el juego después del Game Over
+        }else{
+            Log.d(TAG_LOG, "Secuencia incorrecta")
             Data.state = Data.State.FINISHED
-
-            ok= false
+            Data.secuenceUser = mutableListOf<Int>()
+            Data.round.value=0
         }
-        return ok
     }
 
 
-    fun getRonda(): Int {
-        return Data.round.value
-    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 

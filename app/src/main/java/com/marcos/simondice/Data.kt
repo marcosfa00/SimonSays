@@ -20,15 +20,8 @@ object Data {
         Colors.AMARILLO.color,
         Colors.VERDE.color
     )
-    val colorsTitulo = listOf(
-        Color(0xFF8C34D8), // Púrpura oscuro
-        Color(0xFFE65100), // Naranja oscuro
-        Color(0xFF004D40), // Verde oscuro
-        Color(0xFFC2185B), // Rosa oscuro
-        Color(0xFF1A237E), // Azul oscuro
-        Color(0xFFD50000), // Rojo oscuro
-    )
 
+    //Aun no se para que usar esto
     var numColors = Colors.values()
     var colorPath: Color = Color.White
 

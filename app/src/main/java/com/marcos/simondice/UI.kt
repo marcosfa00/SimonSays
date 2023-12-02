@@ -1,10 +1,12 @@
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -28,127 +30,40 @@ import com.marcos.simondice.Data
 import com.marcos.simondice.VModel
 
 @Composable
-fun Greeting(miModel: VModel){
-    //Title(miModel = miModel)
-
-        Ronda(miModel = miModel)
+fun Greeting(miModel: VModel) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.height(16.dp)) // Añadir espacio superior
+        Ronda(miModel = miModel) // Mostrar el componente Ronda aquí
         Botonera(vModel = miModel)
-        Row {
-
+        Spacer(modifier = Modifier.height(16.dp)) // Añadir espacio entre la Botonera y los botones
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             startButton(miModel = miModel)
+            Spacer(modifier = Modifier.width(16.dp)) // Espacio entre botones
             enviar(miModel = miModel)
         }
-    if (miModel.showGameOverDialog) {
-        GameOverDialog(miModel = miModel)
-    }
-
-
-
-}
-
-@Composable
-fun GameOverDialog(miModel: VModel) {
-    AlertDialog(
-        onDismissRequest = {
-            miModel.showGameOverDialog = false
-        },
-        title = {
-            Text(text = "Game Over")
-        },
-        text = {
-            Text(text = "¡Has cometido un error! Reiniciando el juego.")
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    miModel.showGameOverDialog = false
-                    // Aquí puedes realizar cualquier otra acción necesaria antes de reiniciar el juego.
-                }
-            ) {
-                Text("Aceptar")
-            }
-        }
-    )
-}
-
-@Composable
-fun Title(miModel: VModel) {
-    val colorAnimation = rememberInfiniteTransition()
-
-
-
-    val color by colorAnimation.animateColor(
-        initialValue = Data.colorsTitulo.first(),
-        targetValue = Data.colorsTitulo.last(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.TopCenter
-    ) {
-
-
-
-        Text(
-            text = "SIMON DICE",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 40.sp,
-                color = color
-            ),
-            modifier = Modifier
-
-                .wrapContentSize()
-        )
-
-
     }
 }
+
+
 @Composable
 fun Ronda(miModel: VModel) {
-    val colorAnimation = rememberInfiniteTransition()
-
-
-
-    val color by colorAnimation.animateColor(
-        initialValue = Data.colorsTitulo.first(),
-        targetValue = Data.colorsTitulo.last(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000),
-            repeatMode = RepeatMode.Reverse
-        ), label = ""
+    Text(
+        text = "RONDA: ", // Mostrar el número de ronda
+        color = Color.Black,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 40.sp
     )
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.TopCenter
-    ) {
-
-
-
-        Text(
-            text = "RONDA: ${miModel.getRonda()} ",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 40.sp,
-                color = color
-            ),
-            modifier = Modifier
-
-                .wrapContentSize()
-        )
-
-
-    }
+    // Puedes agregar aquí cualquier otra lógica o contenido relacionado con la ronda si es necesario
 }
+
 
 /**
  * Función que coge la lista de los 4 vcolores, la divide en dos, y crea 4 botones
@@ -158,43 +73,49 @@ fun Ronda(miModel: VModel) {
 fun Botonera(vModel: VModel) {
     val colorsInTwoRows = Data.Colors.values().toList().chunked(2)
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier.padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column {
-            colorsInTwoRows.forEach { rowColors ->
-                Row {
-                    rowColors.forEach { color ->
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Boton(color = color, miModel = vModel)
-                    }
+        colorsInTwoRows.forEach { rowColors ->
+            Row {
+                rowColors.forEach { color ->
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Boton(color = color, miModel = vModel)
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
+
 /**
  * Ahora vamos a crear el boton Start
  */
 @Composable
-fun startButton(miModel: VModel){
-
+fun startButton(miModel: VModel) {
     //Declaramos un Boton
     Button(
         onClick = {
-        //Bien lo que debemos hacer aquí, es cambiar el estado del juego
-            miModel.inicializarJuego()
-            miModel.mostrarSecuencia()
-            miModel.changeStatus()
+                miModel.startGame()
+                miModel.changeState()
+                if (Data.state == Data.State.SEQUENCE){
+                    miModel.generarSecuencia()
+                    miModel.changeState()
+                }else{
+                    miModel.startGame()
+                }
 
-        }
-    ){
+
+
+
+        },
+        modifier = Modifier
+           // Aumentar ligeramente el tamaño del botón
+    ) {
         Text(
-            text = miModel.getStatus(),
+            text = "START",
             color = Color.Black,
             fontWeight = FontWeight.ExtraBold,
             fontSize = 20.sp
@@ -203,21 +124,19 @@ fun startButton(miModel: VModel){
 }
 
 @Composable
-fun enviar(miModel: VModel){
+fun enviar(miModel: VModel) {
     Button(
         onClick = {
-            if (miModel.getStatus()== "START") {
-                //NOTHING CHANGE
-            }else{
-               miModel.comprobarSecuencia()
-                    //Nothing change
+
+                miModel.comprobarSecuencia()
 
 
-            }
 
         },
-                modifier = Modifier.padding(horizontal = 16.dp) // Espacio a los lados del botón
-    ){
+        modifier = Modifier
+            .padding(horizontal = 16.dp) // Espacio a los lados del botón
+           // Aumentar ligeramente el tamaño del botón
+    ) {
         Text(
             text = "ENVIAR",
             color = Color.Black,
@@ -228,14 +147,12 @@ fun enviar(miModel: VModel){
 }
 
 
+
 @Composable
 fun Boton(color: Data.Colors, miModel: VModel) {
     Button(
         onClick = {
-            if (Data.state != Data.State.SEQUENCE) {
-                miModel.aumentarSecuenciaUsuario(color = Data.colors.indexOf(color.color))
 
-            }
                   },
         modifier = Modifier
             .padding(10.dp)
