@@ -114,7 +114,7 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
         onClick = {
             //Recogemos el color que hemos pulsado
             // miModel.aumentarSecuenciaUsuario(Data.colors.indexOf(color))
-            if (Data.state == Data.State.WAITING){
+            if (Data.state == Data.State.WAITING && miModel.buttonsEnabled) {
                 miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
                 miModel.cambiaColorBotonAlPulsar(color)
             }

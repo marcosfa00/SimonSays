@@ -98,23 +98,40 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
     }
 
     //Funcion para generar una secuencia:
+    // Variable para habilitar/deshabilitar botones
+    var buttonsEnabled by mutableStateOf(true)
+
+    // Función para desactivar los botones
+    fun disableButtons() {
+        buttonsEnabled = false
+    }
+
+    // Función para habilitar los botones
+    fun enableButtons() {
+        buttonsEnabled = true
+    }
+
+    // Función para generar una secuencia
     fun generarSecuencia() {
         Log.d(TAG_LOG, "Generando secuencia")
         Data.secuence.add(generarNumeroAleatorio(4))
         Log.d(TAG_LOG, "Secuencia generada: ${Data.secuence}")
-        //Vamos ahora a utilizar una corrutina para que se muestre la secuencia
+
+        // Desactivar los botones durante la visualización de la secuencia
+        disableButtons()
+
         viewModelScope.launch {
             for (i in Data.secuence) {
                 Log.d(TAG_LOG, "Mostramos el color $i")
                 Data.colorPath = Data.numColors[i].color.value
-                //Tras obtener el color que hay que mostrar, tocarámostrarlo con un color más
-                // oscuro para que se vea
                 Data.numColors[i].color.value = lightestColor(Data.colorPath, 0.5f)
                 delay(400)
-                //Ahora volvemos a poner el color original
                 Data.numColors[i].color.value = Data.colorPath
                 delay(400)
             }
+
+            // Habilitar los botones después de mostrar la secuencia completa
+            enableButtons()
         }
     }
 
