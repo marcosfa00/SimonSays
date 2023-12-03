@@ -2,6 +2,7 @@ package com.marcos.simondice
 
 import android.util.Log
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -68,6 +69,16 @@ class VModel : ViewModel() {
     fun generarNumeroAleatorio(maximo: Int): Int {
         return (0..maximo).random()
 
+    }
+
+    fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
+        Log.d(TAG_LOG, "Cambia el color del boton al pulsar")
+       viewModelScope.launch {
+           Data.colorPath = color.value
+           color.value = darkestColor(Data.colorPath, 0.5f)
+              delay(300)
+                color.value = Data.colorPath
+       }
     }
 
     //Funcion para generar una secuencia:

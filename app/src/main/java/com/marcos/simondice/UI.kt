@@ -176,7 +176,7 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
                    // miModel.aumentarSecuenciaUsuario(Data.colors.indexOf(color))
             if (Data.state == Data.State.WAITING){
                 miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
-
+                miModel.cambiaColorBotonAlPulsar(color)
             }
         },
         modifier = Modifier

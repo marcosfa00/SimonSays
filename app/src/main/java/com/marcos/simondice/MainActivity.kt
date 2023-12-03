@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
-import androidx.lifecycle.ViewModel
 import com.marcos.simondice.ui.theme.SimonDiceTheme
 
 class MainActivity : ComponentActivity() {
