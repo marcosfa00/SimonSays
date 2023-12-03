@@ -1,3 +1,4 @@
+import android.util.Log
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -38,7 +39,13 @@ fun Greeting(miModel: VModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(16.dp)) // Añadir espacio superior
-        Ronda(miModel = miModel) // Mostrar el componente Ronda aquí
+        Row {
+            Ronda(miModel = miModel) // Mostrar el componente Ronda aquí
+            Spacer(modifier = Modifier.width(16.dp)) // Espacio entre componentes
+            Record(miModel = miModel) // Mostrar el componente Record aquí
+
+        }
+
         Botonera(vModel = miModel)
         Spacer(modifier = Modifier.height(16.dp)) // Añadir espacio entre la Botonera y los botones
         Row(
@@ -53,16 +60,24 @@ fun Greeting(miModel: VModel) {
     }
 }
 
-
+@Composable
+fun  Record(miModel: VModel){
+    Text(
+        text = "RECORD: ${Data.record.value} ", // Mostrar el número de ronda
+        color = Color.Black,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 20.sp
+    )
+}
 @Composable
 fun Ronda(miModel: VModel) {
     Text(
         text = "RONDA: ${Data.round.value} ", // Mostrar el número de ronda
         color = Color.Black,
         fontWeight = FontWeight.ExtraBold,
-        fontSize = 40.sp
+        fontSize = 20.sp
     )
-    // Puedes agregar aquí cualquier otra lógica o contenido relacionado con la ronda si es necesario
+
 }
 
 
@@ -154,8 +169,7 @@ fun enviar(miModel: VModel) {
 
 @Composable
 fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
-    //Creaos una funcion que recoga el estado actual del boton
-    var isPressed = remember { mutableStateOf(false) }
+
     Button(
         onClick = {
                   //Recogemos el color que hemos pulsado
@@ -164,9 +178,6 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
                 miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
 
             }
-
-
-
         },
         modifier = Modifier
             .padding(10.dp)
