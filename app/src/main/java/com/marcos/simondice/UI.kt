@@ -107,6 +107,35 @@ fun Botonera(vModel: VModel) {
 }
 
 
+@Composable
+fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
+
+    Button(
+        onClick = {
+            //Recogemos el color que hemos pulsado
+            // miModel.aumentarSecuenciaUsuario(Data.colors.indexOf(color))
+            if (Data.state == Data.State.WAITING){
+                miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
+                miModel.cambiaColorBotonAlPulsar(color)
+            }
+        },
+        modifier = Modifier
+            .padding(10.dp)
+            .size(150.dp),
+
+        colors = ButtonDefaults.buttonColors(color.value)
+    ) {
+        Text(
+            text = name,
+            color = Color.Black,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 20.sp
+        )
+    }
+}
+
+
+
 
 /**
  * Ahora vamos a crear el boton Start
@@ -165,35 +194,6 @@ fun enviar(miModel: VModel) {
         )
     }
 }
-
-
-@Composable
-fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
-
-    Button(
-        onClick = {
-                  //Recogemos el color que hemos pulsado
-                   // miModel.aumentarSecuenciaUsuario(Data.colors.indexOf(color))
-            if (Data.state == Data.State.WAITING){
-                miModel.guardarSecuenciaUsuario(Data.colors.indexOf(color))
-                miModel.cambiaColorBotonAlPulsar(color)
-            }
-        },
-        modifier = Modifier
-            .padding(10.dp)
-            .size(150.dp),
-
-        colors = ButtonDefaults.buttonColors(color.value)
-    ) {
-        Text(
-            text = name,
-            color = Color.Black,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 20.sp
-        )
-    }
-}
-
 
 
 

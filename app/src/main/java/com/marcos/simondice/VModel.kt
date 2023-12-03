@@ -1,5 +1,6 @@
 package com.marcos.simondice
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -70,8 +71,9 @@ class VModel : ViewModel() {
         return (0..maximo).random()
 
     }
-
-    fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
+//Comprobar est afuncion
+@SuppressLint("SuspiciousIndentation")
+fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
         Log.d(TAG_LOG, "Cambia el color del boton al pulsar")
        viewModelScope.launch {
            Data.colorPath = color.value
