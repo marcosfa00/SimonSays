@@ -10,7 +10,6 @@ object Data {
 
     var round = mutableStateOf(0);
     var secuence = mutableListOf<Int>();
-    var playStatus = mutableStateOf("START")
     var secuenceUser = mutableListOf<Int>();
     var record = mutableStateOf(0);
     var state = State.START;

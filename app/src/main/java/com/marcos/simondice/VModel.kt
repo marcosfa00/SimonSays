@@ -29,7 +29,7 @@ class VModel : ViewModel() {
     }
 
 
-    fun changeState() {
+   /* fun changeState() {
         Log.d(TAG_LOG, "Cambia el estado de la aplicación")
         if (Data.state == Data.State.START) {
             Data.state = Data.State.SEQUENCE
@@ -51,7 +51,21 @@ class VModel : ViewModel() {
             getState()
         }
 
-    }
+    }*/
+   fun changeState() {
+       Log.d(TAG_LOG, "Cambia el estado de la aplicación")
+
+       Data.state = when (Data.state) {
+           Data.State.START -> Data.State.SEQUENCE
+           Data.State.SEQUENCE -> Data.State.WAITING
+           Data.State.WAITING -> Data.State.CHECKING
+           Data.State.CHECKING -> Data.State.FINISHED
+           Data.State.FINISHED -> Data.State.START
+           else -> Data.state // Manejo por defecto si no coincide con ninguno de los casos
+       }
+
+       getState() // Llamar a la función getState()
+   }
 
     /**
      * FUNCION getState
