@@ -173,9 +173,11 @@ fun enviar(miModel: VModel) {
         onClick = {
             if (Data.state == Data.State.WAITING){
                if ( miModel.comprobarSecuencia()) {
+                   Log.d("corutina", "Secuencia correcta y se lanza la función aumentar secuencia")
                     miModel.aumentarSecuencia()
                }else{
-                     miModel.changeState()
+                   Log.d("corutina", "Secuencia incorrecta")
+                     Data.state = Data.State.FINISHED
                }
 
             }

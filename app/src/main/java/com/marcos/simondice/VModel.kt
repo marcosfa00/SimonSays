@@ -71,7 +71,7 @@ class VModel : ViewModel() {
         return (0..maximo).random()
 
     }
-//Comprobar est afuncion
+
 @SuppressLint("SuspiciousIndentation")
 fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
         Log.d(TAG_LOG, "Cambia el color del boton al pulsar")
@@ -95,11 +95,11 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
                 Data.colorPath = Data.numColors[i].color.value
                 //Tras obtener el color que hay que mostrar, tocarámostrarlo con un color más
                 // oscuro para que se vea
-                Data.numColors[i].color.value = darkestColor(Data.colorPath, 0.5f)
-                delay(500)
+                Data.numColors[i].color.value = lightestColor(Data.colorPath, 0.5f)
+                delay(400)
                 //Ahora volvemos a poner el color original
                 Data.numColors[i].color.value = Data.colorPath
-                delay(500)
+                delay(400)
             }
         }
     }
@@ -113,6 +113,17 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
         val b = (color.blue * (1 - factor)).coerceIn(0f, 1f)
         return Color(r, g, b, color.alpha)
     }
+
+    /**
+     * Fuyncion que muestra colores claros
+     */
+    fun lightestColor(color: Color, factor: Float): Color {
+        val r = (color.red + (1 - color.red) * factor).coerceIn(0f, 1f)
+        val g = (color.green + (1 - color.green) * factor).coerceIn(0f, 1f)
+        val b = (color.blue + (1 - color.blue) * factor).coerceIn(0f, 1f)
+        return Color(r, g, b, color.alpha)
+    }
+
 
     fun guardarSecuenciaUsuario(color: Int) {
         Data.secuenceUser.add(color)
