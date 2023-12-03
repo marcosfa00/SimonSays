@@ -1,13 +1,10 @@
 package com.marcos.simondice
 
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 
 object Data {
-
     var round = mutableStateOf(0);
     var secuence = mutableListOf<Int>();
     var secuenceUser = mutableListOf<Int>();
@@ -29,7 +26,7 @@ object Data {
      * Enum que representa los estados del juego
      */
     enum class State {
-        START, SEQUENCE, WAITING, INPUT, CHECKING, FINISHED
+        START, SEQUENCE, WAITING, CHECKING, FINISHED
     }
 
     /**
@@ -42,12 +39,6 @@ object Data {
         VERDE(color = mutableStateOf(Color.Green), "VERDE"),
 
     }
-
-
-
-
-
-
 
 
 }

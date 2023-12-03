@@ -2,7 +2,6 @@ package com.marcos.simondice
 
 import android.annotation.SuppressLint
 import android.util.Log
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,88 +12,74 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-
 class VModel : ViewModel() {
 
     //declaramos TAG_LOG
-    val TAG_LOG = "corutina"
+    private val tag = "corutina"
 
 
     fun startGame() {
-        Log.d(TAG_LOG, "Iniciando juego")
+        Log.d(tag, "Iniciando juego")
         Data.round.value = 0
-        Data.secuence = mutableListOf<Int>()
-        Data.secuenceUser = mutableListOf<Int>()
+        Data.secuence = mutableListOf()
+        Data.secuenceUser = mutableListOf()
         Data.state = Data.State.START
     }
 
 
-   /* fun changeState() {
-        Log.d(TAG_LOG, "Cambia el estado de la aplicación")
-        if (Data.state == Data.State.START) {
-            Data.state = Data.State.SEQUENCE
-            getState()
-        } else if (Data.state == Data.State.SEQUENCE) {
-            Data.state = Data.State.WAITING
-            getState()
-        } else if (Data.state == Data.State.WAITING) {
-            Data.state = Data.State.INPUT
-            getState()
-        } else if (Data.state == Data.State.INPUT) {
-            Data.state = Data.State.CHECKING
-            getState()
-        } else if (Data.state == Data.State.CHECKING) {
-            Data.state = Data.State.FINISHED
-            getState()
-        } else if (Data.state == Data.State.FINISHED) {
-            Data.state = Data.State.START
-            getState()
+
+    fun changeState() {
+        Log.d(tag, "Cambia el estado de la aplicación")
+
+        Data.state = when (Data.state) {
+            Data.State.START -> Data.State.SEQUENCE
+            Data.State.SEQUENCE -> Data.State.WAITING
+            Data.State.WAITING -> Data.State.CHECKING
+            Data.State.CHECKING -> Data.State.FINISHED
+            Data.State.FINISHED -> Data.State.START
+
         }
 
-    }*/
-   fun changeState() {
-       Log.d(TAG_LOG, "Cambia el estado de la aplicación")
-
-       Data.state = when (Data.state) {
-           Data.State.START -> Data.State.SEQUENCE
-           Data.State.SEQUENCE -> Data.State.WAITING
-           Data.State.WAITING -> Data.State.CHECKING
-           Data.State.CHECKING -> Data.State.FINISHED
-           Data.State.FINISHED -> Data.State.START
-           else -> Data.state // Manejo por defecto si no coincide con ninguno de los casos
-       }
-
-       getState() // Llamar a la función getState()
-   }
+        getState() // Llamar a la función getState()
+    }
 
     /**
      * FUNCION getState
      */
-    fun getState(): Data.State {
-        Log.d(TAG_LOG, "El estado actual es: ${Data.state}")
+    private fun getState(): Data.State {
+        Log.d(tag, "El estado actual es: ${Data.state}")
         return Data.state
 
     }
 
     /**
      * FUNCION que genera un numero aleatorio entre 0 y un numero menor del máximo.
-     * @param maximo: Número máximo que se puede generar
+
      * @return Int: Número aleatorio generado
      */
-    fun generarNumeroAleatorio(maximo: Int): Int {
-        return (0..maximo).random()
+    private fun generarNumeroAleatorio(): Int {
+        return (0..3).random()
 
     }
 
-@SuppressLint("SuspiciousIndentation")
-fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
-        Log.d(TAG_LOG, "Cambia el color del boton al pulsar")
-       viewModelScope.launch {
-           Data.colorPath = color.value
-           color.value = darkestColor(Data.colorPath, 0.5f)
-              delay(300)
-                color.value = Data.colorPath
-       }
+    @SuppressLint("SuspiciousIndentation")
+    fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
+        Log.d(tag, "Cambia el color del boton al pulsar")
+        viewModelScope.launch {
+            Data.colorPath = color.value
+            color.value = darkestColor(Data.colorPath)
+            delay(300)
+            color.value = Data.colorPath
+        }
+    }
+    /**
+     * Función que muestra la secuencia de colores más oscuros.
+     */
+    private fun darkestColor(color: Color): Color {
+        val r = (color.red * (1 - 0.5f)).coerceIn(0f, 1f)
+        val g = (color.green * (1 -  0.5f)).coerceIn(0f, 1f)
+        val b = (color.blue * (1 -  0.5f)).coerceIn(0f, 1f)
+        return Color(r, g, b, color.alpha)
     }
 
     //Funcion para generar una secuencia:
@@ -102,29 +87,32 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
     var buttonsEnabled by mutableStateOf(true)
 
     // Función para desactivar los botones
-    fun disableButtons() {
+    private fun disableButtons() {
         buttonsEnabled = false
     }
 
     // Función para habilitar los botones
-    fun enableButtons() {
+    private fun enableButtons() {
         buttonsEnabled = true
     }
 
     // Función para generar una secuencia
     fun generarSecuencia() {
-        Log.d(TAG_LOG, "Generando secuencia")
-        Data.secuence.add(generarNumeroAleatorio(4))
-        Log.d(TAG_LOG, "Secuencia generada: ${Data.secuence}")
+        Log.d(tag, "Generar Secuencia")
+        Log.d(tag, "Estado actual: ${Data.state}")
+        Data.secuence.add(generarNumeroAleatorio())
+        Log.d(tag, "Secuencia generada: ${Data.secuence}")
+
 
         // Desactivar los botones durante la visualización de la secuencia
         disableButtons()
 
         viewModelScope.launch {
+
             for (i in Data.secuence) {
-                Log.d(TAG_LOG, "Mostramos el color $i")
+                Log.d(tag, "Mostramos el color $i")
                 Data.colorPath = Data.numColors[i].color.value
-                Data.numColors[i].color.value = lightestColor(Data.colorPath, 0.5f)
+                Data.numColors[i].color.value = darkestColor(Data.colorPath)
                 delay(400)
                 Data.numColors[i].color.value = Data.colorPath
                 delay(400)
@@ -134,31 +122,38 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
             enableButtons()
         }
     }
-
     /**
-     * Función que muestra la secuencia de colores más oscuros.
+     * Ahora debemso hacer una función que aumente la secuencia del usuario para
+     * que cada vez se muestren más colores
      */
-    fun darkestColor(color: Color, factor: Float): Color {
-        val r = (color.red * (1 - factor)).coerceIn(0f, 1f)
-        val g = (color.green * (1 - factor)).coerceIn(0f, 1f)
-        val b = (color.blue * (1 - factor)).coerceIn(0f, 1f)
-        return Color(r, g, b, color.alpha)
+    fun aumentarSecuencia(){
+        if (Data.state == Data.State.SEQUENCE){
+            generarSecuencia()
+            Data.state = Data.State.WAITING
+            Log.d(tag, "Cambia el estado a ${Data.state}")
+
+            //Ahora reseteamos la secuencia del usuario
+            Data.secuenceUser = mutableListOf()
+
+        }
     }
+
+
 
     /**
      * Fuyncion que muestra colores claros
      */
-    fun lightestColor(color: Color, factor: Float): Color {
-        val r = (color.red + (1 - color.red) * factor).coerceIn(0f, 1f)
-        val g = (color.green + (1 - color.green) * factor).coerceIn(0f, 1f)
-        val b = (color.blue + (1 - color.blue) * factor).coerceIn(0f, 1f)
-        return Color(r, g, b, color.alpha)
-    }
+    /* private fun lightestColor(color: Color): Color {
+         val r = (color.red + (1 - color.red) *  0.5f).coerceIn(0f, 1f)
+         val g = (color.green + (1 - color.green) *  0.5f).coerceIn(0f, 1f)
+         val b = (color.blue + (1 - color.blue) *  0.5f).coerceIn(0f, 1f)
+         return Color(r, g, b, color.alpha)
+     }*/
 
 
     fun guardarSecuenciaUsuario(color: Int) {
         Data.secuenceUser.add(color)
-        Log.d(TAG_LOG, "Secuencia del usuario: ${Data.secuenceUser}")
+        Log.d(tag, "Secuencia del usuario: ${Data.secuenceUser}")
 
     }
 
@@ -171,11 +166,11 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
      * Función que comprueba si la secuencia del usuario es correcta
      */
     fun comprobarSecuencia(): Boolean {
-        var correcta : Boolean
+        val correcta : Boolean
         Data.state = Data.State.CHECKING
-        Log.d(TAG_LOG, "Cambiamso el estado a ${Data.state}")
+        Log.d(tag, "Cambiamso el estado a ${Data.state}")
         if (Data.secuence == Data.secuenceUser) {
-            Log.d(TAG_LOG, "Secuencia correcta")
+            Log.d(tag, "OK")
             Data.state = Data.State.SEQUENCE//Cambiamos el estado a SEQUENCE
             correcta = true
             Data.round.value++
@@ -184,69 +179,14 @@ fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
                 Data.record.value = Data.round.value
             }
         } else {
-            Log.d(TAG_LOG, "Secuencia incorrecta")
+            Log.d(tag, "NOT OK")
             correcta = false
             Data.state = Data.State.FINISHED
-            Log.d(TAG_LOG, "Se cambia el Estado de la aplicación a${Data.state}")
+            Log.d(tag, "Se cambia el Estado de la aplicación a${Data.state}")
             Data.round.value = 0
         }
         return correcta
     }
 
-    /**
-     * Ahora debemso hacer una función que aumente la secuencia del usuario para
-     * que cada vez se muestren más colores
-     */
-   fun aumentarSecuencia(){
-      if (Data.state == Data.State.SEQUENCE){
-          generarSecuencia()
-          Data.state = Data.State.WAITING
 
-          //Ahora reseteamos la secuencia del usuario
-            Data.secuenceUser = mutableListOf<Int>()
-
-      }
-   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

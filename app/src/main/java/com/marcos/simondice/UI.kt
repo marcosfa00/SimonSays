@@ -1,30 +1,22 @@
 import android.util.Log
-import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,9 +32,9 @@ fun Greeting(miModel: VModel) {
     ) {
         Spacer(modifier = Modifier.height(16.dp)) // Añadir espacio superior
         Row {
-            Ronda(miModel = miModel) // Mostrar el componente Ronda aquí
+            Ronda() // Mostrar el componente Ronda aquí
             Spacer(modifier = Modifier.width(16.dp)) // Espacio entre componentes
-            Record(miModel = miModel) // Mostrar el componente Record aquí
+            Record() // Mostrar el componente Record aquí
 
         }
 
@@ -53,15 +45,15 @@ fun Greeting(miModel: VModel) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            startButton(miModel = miModel)
+            StartButton(miModel = miModel)
             Spacer(modifier = Modifier.width(16.dp)) // Espacio entre botones
-            enviar(miModel = miModel)
+            Enviar(miModel = miModel)
         }
     }
 }
 
 @Composable
-fun  Record(miModel: VModel){
+fun  Record(){
     Text(
         text = "RECORD: ${Data.record.value} ", // Mostrar el número de ronda
         color = Color.Black,
@@ -70,7 +62,7 @@ fun  Record(miModel: VModel){
     )
 }
 @Composable
-fun Ronda(miModel: VModel) {
+fun Ronda() {
     Text(
         text = "RONDA: ${Data.round.value} ", // Mostrar el número de ronda
         color = Color.Black,
@@ -83,8 +75,8 @@ fun Ronda(miModel: VModel) {
 
 /**
  * Función que coge la lista de los 4 vcolores, la divide en dos, y crea 4 botones
- * en forma de cuadrado
- */
+ * en forma de cuadrado*/
+
 @Composable
 fun Botonera(vModel: VModel) {
     val colorsInTwoRows = Data.Colors.values().toList().chunked(2)
@@ -105,6 +97,9 @@ fun Botonera(vModel: VModel) {
         }
     }
 }
+
+
+
 
 
 @Composable
@@ -141,22 +136,22 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
  * Ahora vamos a crear el boton Start
  */
 @Composable
-fun startButton(miModel: VModel) {
+fun StartButton(miModel: VModel) {
     //Declaramos un Boton
     Button(
         onClick = {
-                miModel.startGame()
+            miModel.startGame()
+            miModel.changeState()
+            if (Data.state == Data.State.SEQUENCE ){
+                miModel.generarSecuencia()
                 miModel.changeState()
-                if (Data.state == Data.State.SEQUENCE){
-                    miModel.generarSecuencia()
-                    miModel.changeState()
-                }else{
-                    miModel.startGame()
-                }
+            }else{
+                miModel.startGame()
+            }
 
         },
         modifier = Modifier
-           // Aumentar ligeramente el tamaño del botón
+        // Aumentar ligeramente el tamaño del botón
     ) {
         Text(
             text = "START",
@@ -168,17 +163,17 @@ fun startButton(miModel: VModel) {
 }
 
 @Composable
-fun enviar(miModel: VModel) {
+fun Enviar(miModel: VModel) {
     Button(
         onClick = {
             if (Data.state == Data.State.WAITING){
-               if ( miModel.comprobarSecuencia()) {
-                   Log.d("corutina", "Secuencia correcta y se lanza la función aumentar secuencia")
+                if ( miModel.comprobarSecuencia()) {
+                    Log.d("corutina", "Secuencia correcta y se lanza la función aumentar secuencia")
                     miModel.aumentarSecuencia()
-               }else{
-                   Log.d("corutina", "Secuencia incorrecta")
-                     Data.state = Data.State.FINISHED
-               }
+                }else{
+                    Log.d("corutina", "Secuencia incorrecta")
+                    Data.state = Data.State.FINISHED
+                }
 
             }
 
@@ -186,7 +181,7 @@ fun enviar(miModel: VModel) {
         },
         modifier = Modifier
             .padding(horizontal = 16.dp) // Espacio a los lados del botón
-           // Aumentar ligeramente el tamaño del botón
+        // Aumentar ligeramente el tamaño del botón
     ) {
         Text(
             text = "ENVIAR",
@@ -196,8 +191,3 @@ fun enviar(miModel: VModel) {
         )
     }
 }
-
-
-
-
-
