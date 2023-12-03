@@ -17,6 +17,7 @@ class VModel : ViewModel() {
     //declaramos TAG_LOG
     val TAG_LOG = "corutina"
 
+
     fun startGame() {
         Log.d(TAG_LOG, "Iniciando juego")
         Data.round.value = 0
@@ -152,6 +153,8 @@ class VModel : ViewModel() {
       }
    }
 }
+
+
 
 
 

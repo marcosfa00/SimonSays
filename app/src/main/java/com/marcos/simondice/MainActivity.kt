@@ -2,9 +2,11 @@ package com.marcos.simondice
 
 import Greeting
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
+import androidx.lifecycle.ViewModel
 import com.marcos.simondice.ui.theme.SimonDiceTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +21,13 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        Log.d("corutina", "onStart")
+        VModel().startGame()
     }
 }
 

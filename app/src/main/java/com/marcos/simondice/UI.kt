@@ -1,5 +1,6 @@
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -90,6 +91,8 @@ fun Botonera(vModel: VModel) {
     }
 }
 
+
+
 /**
  * Ahora vamos a crear el boton Start
  */
@@ -106,9 +109,6 @@ fun startButton(miModel: VModel) {
                 }else{
                     miModel.startGame()
                 }
-
-
-
 
         },
         modifier = Modifier
@@ -154,6 +154,8 @@ fun enviar(miModel: VModel) {
 
 @Composable
 fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
+    //Creaos una funcion que recoga el estado actual del boton
+    var isPressed = remember { mutableStateOf(false) }
     Button(
         onClick = {
                   //Recogemos el color que hemos pulsado
@@ -169,6 +171,7 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
         modifier = Modifier
             .padding(10.dp)
             .size(150.dp),
+
         colors = ButtonDefaults.buttonColors(color.value)
     ) {
         Text(
