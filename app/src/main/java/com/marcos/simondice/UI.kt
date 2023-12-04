@@ -23,6 +23,13 @@ import androidx.compose.ui.unit.sp
 import com.marcos.simondice.Data
 import com.marcos.simondice.VModel
 
+
+/**
+ * Composable principal que muestra la pantalla de saludo del juego.
+ * Muestra información como la ronda actual, el récord, la botonera de colores y botones de inicio y envío.
+ *
+ * @param miModel La instancia del modelo VModel asociado a la pantalla de saludo.
+ */
 @Composable
 fun Greeting(miModel: VModel) {
     Column(
@@ -52,6 +59,10 @@ fun Greeting(miModel: VModel) {
     }
 }
 
+/**
+ * Composable que muestra el récord actual del juego.
+ * Utiliza el valor almacenado en [Data.record] para mostrar el récord actual.
+ */
 @Composable
 fun  Record(){
     Text(
@@ -61,6 +72,11 @@ fun  Record(){
         fontSize = 20.sp
     )
 }
+
+/**
+ * Composable que muestra el número de la ronda actual del juego.
+ * Utiliza el valor almacenado en [Data.round] para mostrar la ronda actual.
+ */
 @Composable
 fun Ronda() {
     Text(
@@ -74,9 +90,10 @@ fun Ronda() {
 
 
 /**
- * Función que coge la lista de los 4 vcolores, la divide en dos, y crea 4 botones
- * en forma de cuadrado*/
-
+ * Composable que muestra una disposición de botones organizados en filas y columnas.
+ *
+ * @param vModel La instancia del modelo VModel asociado a la botonera.
+ */
 @Composable
 fun Botonera(vModel: VModel) {
     val colorsInTwoRows = Data.Colors.values().toList().chunked(2)
@@ -101,7 +118,13 @@ fun Botonera(vModel: VModel) {
 
 
 
-
+/**
+ * Composable que muestra un botón personalizado con un color, un modelo y un nombre dados.
+ *
+ * @param color El estado mutable del color del botón.
+ * @param miModel La instancia del modelo VModel asociado al botón.
+ * @param name El texto que se mostrará en el botón.
+ */
 @Composable
 fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
 
@@ -116,7 +139,9 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
         },
         modifier = Modifier
             .padding(10.dp)
-            .size(150.dp),
+            .size(150.dp)
+            .padding(8.dp), // Añadir padding para que se vean mejor los bordes redondeados
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp), // Agregar bordes redondeados
 
         colors = ButtonDefaults.buttonColors(color.value)
     ) {
@@ -133,7 +158,9 @@ fun Boton(color: MutableState<Color>, miModel: VModel, name: String) {
 
 
 /**
- * Ahora vamos a crear el boton Start
+ * Composable que muestra un botón de inicio para comenzar el juego.
+ *
+ * @param miModel La instancia del modelo VModel asociado al botón de inicio.
  */
 @Composable
 fun StartButton(miModel: VModel) {
@@ -162,6 +189,11 @@ fun StartButton(miModel: VModel) {
     }
 }
 
+/**
+ * Composable que muestra un botón para enviar una secuencia en el juego.
+ *
+ * @param miModel La instancia del modelo VModel asociado al botón de envío.
+ */
 @Composable
 fun Enviar(miModel: VModel) {
     Button(

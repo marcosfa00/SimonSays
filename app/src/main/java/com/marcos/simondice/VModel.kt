@@ -17,7 +17,11 @@ class VModel : ViewModel() {
     //declaramos TAG_LOG
     private val tag = "corutina"
 
-
+    /**
+     * Inicia un nuevo juego, reiniciando los valores del juego a su estado inicial.
+     * Establece el número de rondas en cero, reinicia las secuencias del juego
+     * y establece el estado del juego como "START".
+     */
     fun startGame() {
         Log.d(tag, "Iniciando juego")
         Data.round.value = 0
@@ -27,7 +31,12 @@ class VModel : ViewModel() {
     }
 
 
-
+    /**
+     * Cambia el estado de la aplicación al siguiente estado en el ciclo del juego.
+     * Los posibles estados son: START, SEQUENCE, WAITING, CHECKING y FINISHED.
+     * Dependiendo del estado actual, cambia al siguiente estado en el ciclo del juego.
+     * Llama a la función getState() después de cambiar el estado.
+     */
     fun changeState() {
         Log.d(tag, "Cambia el estado de la aplicación")
 
@@ -44,7 +53,10 @@ class VModel : ViewModel() {
     }
 
     /**
-     * FUNCION getState
+     * Obtiene y registra el estado actual de la aplicación.
+     * Imprime en el registro el estado actual de la aplicación y devuelve dicho estado.
+     *
+     * @return El estado actual de la aplicación.
      */
     private fun getState(): Data.State {
         Log.d(tag, "El estado actual es: ${Data.state}")
@@ -53,15 +65,22 @@ class VModel : ViewModel() {
     }
 
     /**
-     * FUNCION que genera un numero aleatorio entre 0 y un numero menor del máximo.
-
-     * @return Int: Número aleatorio generado
+     * Genera y devuelve un número aleatorio entre 0 y 3, ambos inclusive.
+     *
+     * @return El número aleatorio generado.
      */
     private fun generarNumeroAleatorio(): Int {
         return (0..3).random()
 
     }
 
+    /**
+     * Cambia el color del botón al ser pulsado.
+     * Utiliza un efecto de transición para cambiar el color del botón al color más oscuro
+     * durante un breve lapso de tiempo y luego vuelve al color original.
+     *
+     * @param color El estado mutable del color del botón.
+     */
     @SuppressLint("SuspiciousIndentation")
     fun cambiaColorBotonAlPulsar(color: MutableState<Color>) {
         Log.d(tag, "Cambia el color del boton al pulsar")
@@ -72,8 +91,12 @@ class VModel : ViewModel() {
             color.value = Data.colorPath
         }
     }
+
     /**
-     * Función que muestra la secuencia de colores más oscuros.
+     * Obtiene el tono más oscuro de un color dado, reduciendo su brillo en un 50%.
+     *
+     * @param color El color del que se va a obtener el tono más oscuro.
+     * @return El color resultante con un tono más oscuro.
      */
     private fun darkestColor(color: Color): Color {
         val r = (color.red * (1 - 0.5f)).coerceIn(0f, 1f)
@@ -96,7 +119,12 @@ class VModel : ViewModel() {
         buttonsEnabled = true
     }
 
-    // Función para generar una secuencia
+    /**
+     * Genera una secuencia aleatoria de colores en el juego Simon.
+     * Agrega un número aleatorio a la secuencia y muestra secuencialmente los colores
+     * almacenados en la secuencia, dando una breve pausa entre cada color.
+     * Desactiva los botones durante la visualización de la secuencia y luego los habilita.
+     */
     fun generarSecuencia() {
         Log.d(tag, "Generar Secuencia")
         Log.d(tag, "Estado actual: ${Data.state}")
@@ -122,9 +150,12 @@ class VModel : ViewModel() {
             enableButtons()
         }
     }
+
+
     /**
-     * Ahora debemso hacer una función que aumente la secuencia del usuario para
-     * que cada vez se muestren más colores
+     * Aumenta la secuencia de colores en el juego Simon.
+     * Si el estado actual es "SEQUENCE", genera una nueva secuencia aleatoria de colores
+     * y cambia el estado a "WAITING". También resetea la secuencia del usuario.
      */
     fun aumentarSecuencia(){
         if (Data.state == Data.State.SEQUENCE){
@@ -139,18 +170,11 @@ class VModel : ViewModel() {
     }
 
 
-
     /**
-     * Fuyncion que muestra colores claros
+     * Guarda el color seleccionado por el usuario en la secuencia del jugador.
+     *
+     * @param color El índice del color seleccionado por el usuario.
      */
-    /* private fun lightestColor(color: Color): Color {
-         val r = (color.red + (1 - color.red) *  0.5f).coerceIn(0f, 1f)
-         val g = (color.green + (1 - color.green) *  0.5f).coerceIn(0f, 1f)
-         val b = (color.blue + (1 - color.blue) *  0.5f).coerceIn(0f, 1f)
-         return Color(r, g, b, color.alpha)
-     }*/
-
-
     fun guardarSecuenciaUsuario(color: Int) {
         Data.secuenceUser.add(color)
         Log.d(tag, "Secuencia del usuario: ${Data.secuenceUser}")
@@ -159,11 +183,12 @@ class VModel : ViewModel() {
 
 
 
+
     /**
-     * Función que comprueba si la secuencia del usuario es correcta
-     */
-    /**
-     * Función que comprueba si la secuencia del usuario es correcta
+     * Comprueba si la secuencia del jugador coincide con la secuencia generada por el juego.
+     * Verifica si la secuencia del jugador es igual a la secuencia generada por el juego.
+     *
+     * @return Devuelve true si la secuencia del jugador coincide con la secuencia generada por el juego, de lo contrario, devuelve false.
      */
     fun comprobarSecuencia(): Boolean {
         val correcta : Boolean
@@ -187,6 +212,8 @@ class VModel : ViewModel() {
         }
         return correcta
     }
+
+
 
 
 }

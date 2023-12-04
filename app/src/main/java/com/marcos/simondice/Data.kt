@@ -17,20 +17,39 @@ object Data {
         Colors.VERDE.color
     )
 
-    //Aun no se para que usar esto
+    /**
+     * Arreglo de colores disponibles en el juego Simon.
+     * Contiene todos los colores definidos en la enumeración Colors.
+     */
     var numColors = Colors.values()
+
+    /**
+     * Color actual utilizado en el juego.
+     * Almacena el color actual en el camino del juego.
+     * Por defecto, se establece en blanco.
+     */
     var colorPath: Color = Color.White
 
 
     /**
-     * Enum que representa los estados del juego
+     * Enumeración que representa los distintos estados del juego.
+     * Los estados incluyen START, SEQUENCE, WAITING, CHECKING y FINISHED.
      */
     enum class State {
-        START, SEQUENCE, WAITING, CHECKING, FINISHED
+        START, // Estado inicial del juego
+        SEQUENCE, // Mostrando la secuencia de colores
+        WAITING, // Esperando la interacción del usuario
+        CHECKING, // Comprobando la secuencia del usuario
+        FINISHED // Juego finalizado
     }
 
+
     /**
-     * Enum para los colores del juego
+     * Enumeración que representa los colores del juego Simon.
+     * Cada color tiene asociado un estado mutable y un nombre.
+     *
+     * @property color El estado mutable del color.
+     * @property colorName El nombre del color.
      */
     enum class Colors(val color: MutableState<Color>,  val colorName: String) {
         ROJO(mutableStateOf(Color.Red), "ROJO"),
